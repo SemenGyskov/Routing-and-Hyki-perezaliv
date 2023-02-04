@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div id="app"></div>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+    const Router = ReactRouterDOM.BrowserRouter;
+    const Route = ReactRouterDOM.Route;
+    const Routes = ReactRouterDOM.Routes;
+    const Link = ReactRouterDOM.Link;
+    function LoginButton(props){
+    return(
+        <button onClick={props.onClick}>Войти</button>
+    )
+}
+function LogoutButton(props){
+    return(
+        <button onClick={props.onClick}>Выйти</button>
+    )
+}
+function GuestGreeting(props){
+    return <h1>Войдите, пожалуйста</h1>
+}
+function UserGreeting(props){
+    return <h1> С возращением!</h1>
+}
+function Greeting(props){
+    const isLoggedIn = props.isLoggedIn
+    if (isLoggedIn){
+        return <UserGreeting/>
+    }
+    return <GuestGreeting/>
+}
+class LoginControl extends React.Component{
+    constructor(props){
+        super(props)
+        this.handleLoginClick = this.handleLoginClick.bind(this)
+        this.handleLogoutClick = this.handleLogoutClick.bind(this)
+        this.state = {isLoggedIn:false}
+    }
+    handleLoginClick(){
+        this.setState({isLoggedIn: true})
+    }
+    handleLogoutClick(){
+        this.setState({isLoggedIn:false})
+    }
+    render(){
+        const isLoggedIn = this.state.isLoggedIn
+        let button
+        if (isLoggedIn){
+            button = <LogoutButton onClick={this.handleLogoutClick}/>
+        }else{
+            button = <LoginButton onClick={this.handleLoginClick}/>
+        }
+        return(
+            <div>
+                <Greeting isLoggedIn={isLoggedIn}/>
+                {button}
+            </div>
+        )
+    }
+}
+    function Home(){ return <h2>Это главная страница </h2>; }
+    function About(){ return <h2>О Нас</h2>; }
+    function NotFound(){return <h2>Такого нетю   :3</h2>; }
+    function Phone(){return <h1>Айпхфоне</h1>}
+    function XBOX(){return <h1>Икс бокес сериес</h1>}
+    function PL(){return <h1>Плейстейшан файве</h1>}
+    function User(){
+   const[name,setName]=React.useState('Simen')
+   const nameRef = React.useRef(name)
+
+   
+   React.useEffect(()=>{
+    document.title = name
+    nameRef.current=name
+   }, [name])
+
+   React.useEffect(()=>{
+    const userName = localStorage.getItem('username')
+    if(userName!== null){
+        setName(userName)
+        console.log('Отлично')
+    }
+    return()=>{
+        console.log(nameRef.current)
+        localStorage.setItem('userName', nameRef.current)
+        console.log('Сохранено!')
+    }
+   }, [])
+   function changeName(event){
+    setName(event.target.value)
+   }
+   const unmount = ()=> ShadowRoot.unmount();
+   return(
+    <div>
+        <input value={name} onChange={changeName} placeholder='Введите имя'/>
+    </div>
+   )
+}
+    function Products(){
+        return <nav>
+          <Link to="/PL">Plastation V</Link> <br/>
+          <Link to="/XBOX">XBOX</Link><br/>
+          <Link to="/phone">Phone</Link> <br/>
+              </nav>;
+    }
+    function Nav(){
+        return <nav>
+                <Link to="/">Главная</Link>  <Link to="/about">О Нас</Link>  <Link to="/products">Товары</Link> <Link to="/User">Пользователь</Link>   <Link to='/LoginControl'>Вход</Link>
+            </nav>;
+    }
+    ReactDOM.createRoot(
+        document.getElementById("app")
+    )
+    .render(
+        <Router>
+            <div>
+              <Nav />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={ <About />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="*" element={<NotFound />} />
+                <Route path="/phone" element={<Phone />} />
+                <Route path="/XBOX" element={<XBOX />} />
+                <Route path="/PL" element={<PL />} />
+                <Route path='/User' element={<User/>}/>
+                <Route path='/LoginControl' element={<LoginControl/>}/>
+               </Routes>
+            </div>
+        </Router>
+    );
+    </script>
+</body>
+</html>
